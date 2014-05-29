@@ -25,12 +25,14 @@ my $Test = Test::Builder->new;
 my $opt_doxygen_exe = 'doxygen';
 my $opt_xmllint_exe = 'xmllint';
 my $opt_updateref = '';
+my $opt_keep_results = 0;
 my @opt_test_ids;
 my $opt_all = '';
 
 GetOptions( 'updateref'  => \$opt_updateref,
             'doxygen=s'  => \$opt_doxygen_exe,
             'xmllint=s'  => \$opt_xmllint_exe,
+	    'keep-result'=> \$opt_keep_results,
             'id=i'       => \@opt_test_ids,
             'all'        => \$opt_all
           );
@@ -102,6 +104,11 @@ sub get_config {
   return %config;
 }
 
+sub clean_output {
+   my $path = shift;
+  remove_tree($path) unless $opt_keep_results;
+}
+
 sub perform_test {
   my $test_file = shift;
   my %config = get_config($test_file);
@@ -117,7 +124,7 @@ sub perform_test {
   }
 
   # prepare test environment
-  remove_tree("$test_out");
+  clean_output("$test_out");
   make_path("$test_out");
   copy("Doxyfile","$test_out");
   open(F,">>$test_out/Doxyfile");
@@ -162,7 +169,7 @@ sub perform_test {
   }
 
   # test passed
-  remove_tree("$test_out");
+  clean_output("$test_out");
   $Test->ok(1, $test_name);
 }
 
@@ -175,7 +182,7 @@ sub update_test {
   my $test_out = $test_id;
 
   # prepare reference environment
-  remove_tree("$test_out");
+  clean_output("$test_out");
   make_path("$test_out");
   copy("Doxyfile","$test_out");
   open(F,">>$test_out/Doxyfile");
@@ -218,7 +225,7 @@ sub update_test {
 
   if (!$err) {
     # clean-up
-    remove_tree("$test_out/out");
+    clean_output("$test_out/out");
     unlink("$test_out/Doxyfile");
   }
 }
