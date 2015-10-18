@@ -8,6 +8,10 @@ class Test
   public:
     /// a member function
     void example();
+
+  private:
+    int member;		///< a data-member.
+    int member2;	//< another data-member.
 };
 
 /*! \mainpage

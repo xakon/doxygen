@@ -22,7 +22,7 @@ use File::Path qw(make_path remove_tree);
 use File::Copy qw(copy);
 
 my $Test = Test::Builder->new;
-my $opt_doxygen_exe = 'doxygen';
+my $opt_doxygen_exe = '../bin/doxygen';
 my $opt_xmllint_exe = 'xmllint';
 my $opt_updateref = '';
 my $opt_keep_results = 0;
